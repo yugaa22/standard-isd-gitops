@@ -8,7 +8,7 @@ metadata:
   name: oes-ui-ingress
 spec:
   rules:
-  - host: oes.dev.example.com
+  - host: oes.yug.play.opsmx.org
     http:
       paths:
       - backend:

@@ -17,7 +17,7 @@ data:
     app:
       sync:
         enabled: true
-    spinnakerLink: http://spin.dev.example.com
+    spinnakerLink: http://spindeck.yug.play.opsmx.org
     
 kind: ConfigMap
 metadata:

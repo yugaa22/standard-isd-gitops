@@ -8,7 +8,7 @@ metadata:
   name: oes-gate-ingress
 spec:
   rules:
-  - host: oes-gate.dev.example.com
+  - host: oes-gate.yug.play.opsmx.org
     http:
       paths:
       - backend:
