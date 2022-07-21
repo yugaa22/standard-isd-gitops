@@ -4,19 +4,19 @@ global:
   spinDeck:
   # Custom Images registry where all the OSS and customized images used in the helm chart are stored
     protocol: http
-    host: spin.dev.example.com   #Update the correct spin-deck url
+    host: spindeck.yug.play.opsmx.org  #Update the correct spin-deck url
 
   spinGate:
     protocol: http
-    host: oes-gate.dev.example.com  #Update the correct spin-gate url, same as oes-gate for common-gate
+    host: spingate.yug.play.opsmx.org  #Update the correct spin-gate url, same as oes-gate for common-gate
 
   oesUI:
     protocol: http
-    host: oes.dev.example.com   #Update the correct oesui url
+    host: oes.yug.play.opsmx.org    #Update the correct oesui url
 
   oesGate:
     protocol: http
-    host: oes-gate.dev.example.com #Update the correct oes-gate url
+    host: oes-gate.yug.play.opsmx.org  #Update the correct oes-gate url
 
   ssl:
     enabled: false # Set to true if using "httpS" urls. TLS certificates must be generated for the above URL
@@ -56,11 +56,11 @@ spinnaker:
     repo:
       type: git # git, s3, stash(bitbucket server) use a different sample values file for s3/bitbuck-stash
       ## Git repo details, https://<baseUrlHostName>/<organization>/<repository>
-      organization: YOUR_ORG_NAME_OR_YOUR_USER_NAME_IF_NO_ORG
-      repository: YOUR_REPO_NAME # repo name for GitOps Halyard, will be created if "githubcreationHook" is set to true
-      username: YOUR_USER_NAME  # Username to authenticate with git/stash repo
+      organization: yugaa22
+      repository: standard-isd-gitops # repo name for GitOps Halyard, will be created if "githubcreationHook" is set to true
+      username: yugaa22  # Username to authenticate with git/stash repo
       token: encrypted:gittoken:gittoken  # Token corresponding to above username
-      dynamicAccRepository: SAME_AS_REPOSITORY_ABOVE # Repo name of the GitOps Dynamic Accounts Directory, Can be same as "repository"
+      dynamicAccRepository: yugaa22 # Repo name of the GitOps Dynamic Accounts Directory, Can be same as "repository"
 
       ########################################################################################
       ## Additional git-repo parameters, typically no need to be change
@@ -70,7 +70,7 @@ spinnaker:
       ## Configure below fields only if repo type is git/stash.
       baseUrlHostName: github.com    # Change only if using enterprise git or another repo-type
       projectName: ""                # Specify project name only if repo is under a project
-      halConfigBranch: main        # Branch for the "repository", recommend to keep "main"
+      halConfigBranch: 3.10        # Branch for the "repository", recommend to keep "main"
       halConfigPath: /               #relative path from repository root folder
       dynAccntConfigPath: /          #relative path from repository root folder
       
