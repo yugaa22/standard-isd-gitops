@@ -20,7 +20,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/configmap: ae30b1e2fb8c1ad94b3ba744f7c57374f73b7dd218fc757e048d55f3896a936f
+        checksum/configmap: 4a928d86f6e0da9eff6211a4f5952581c7137115f820e4882b769dccc34c7c9d
       labels:
         app: "isd-spinnaker"
         heritage: "Helm"

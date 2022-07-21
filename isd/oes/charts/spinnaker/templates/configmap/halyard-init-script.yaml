@@ -15,10 +15,10 @@ data:
     rm -rf /tmp/spinnaker/.hal
     GIT_USER=`echo $GIT_USER | sed 's/ *$//g'`
     GIT_TOKEN=`echo $GIT_TOKEN | sed 's/ *$//g'`
-    git -c http.sslVerify=false clone $GIT_CLONE_PARAM -b 3.1 /tmp/spinnaker/test 2>/tmp/tmp.log
+    git -c http.sslVerify=false clone $GIT_CLONE_PARAM -b main /tmp/spinnaker/test 2>/tmp/tmp.log
     if [[ $? != 0 ]]; then
        echo "ERROR: Failed while trying to execute:"
-       echo "git -c http.sslVerify=false clone $GIT_CLONE_PARAM -b 3.1 /tmp/spinnaker/test" | sed s/$GIT_TOKEN/\<TOKEN_REDACTED\>/g
+       echo "git -c http.sslVerify=false clone $GIT_CLONE_PARAM -b main /tmp/spinnaker/test" | sed s/$GIT_TOKEN/\<TOKEN_REDACTED\>/g
        sed s/$GIT_TOKEN/\<TOKEN_REDACTED\>/g /tmp/tmp.log
        echo "####"
        echo "Correct baseUrlHostName, organization, username, token and repository in values.yaml and re-execute 'helm upgrade --install ....' command"
