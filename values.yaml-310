@@ -1,9 +1,22 @@
-#####################################################
 global:
-  ## URL that will be used to access ISD. MUST BE CHANGED
-  ## Ensure that this URL is reachable from your browser. Either DNS name server record must exist or "hosts" file must be updated
+  ## URLs that will be used to access ISD. MUST BE CHANGED
+  ## Ensure that this URL is reachable from your browser. Either DNS name server record must exist or "hosts" file must be updated        
+  spinDeck:
+  # Custom Images registry where all the OSS and customized images used in the helm chart are stored
+    protocol: http
+    host: spindeck.yug.play.opsmx.org  #Update the correct spin-deck url
+
+  spinGate:
+    protocol: http
+    host: spingate.yug.play.opsmx.org  #Update the correct spin-gate url, same as oes-gate for common-gate
+
   oesUI:
-    host: oes.yug.play.opsmx.org
+    protocol: http
+    host: oes.yug.play.opsmx.org    #Update the correct oesui url
+
+  oesGate:
+    protocol: http
+    host: oes-gate.yug.play.opsmx.org  #Update the correct oes-gate url
 
   ssl:
     enabled: false # Set to true if using "httpS" urls. TLS certificates must be generated for the above URL
@@ -15,25 +28,31 @@ global:
   ## The cluster MUST have nginx ingress controller already installed
   createIngress: true
 
-  #Only for trial purposes, pod-baesd git is installed and automatically configured
-  gitea: 
-    enabled: false # Set to true for trial-install only
+  # Only update this is using a private repo such as ACR, ECR, GCR, JFrog, etc.
+  customImages:
+    registry: quay.io/opsmxpublic
 
-  ###############################################################################
-  # A trial LDAP is installed by default, with users: admin, user1,2,3 with user1password, user2pa...
-  # Set it to false if own LDAP is to be configured
+  # Common gate for both spin and oes services. Change ONLY if required
+  commonGate:
+    enabled: true
+    
+  # Only update this is using a private repo such as ACR, ECR, GCR, JFrog, etc.
+  customImages:
+    registry: quay.io/opsmxpublic
+
   installOpenLdap: true
-
-  ## ldap configuration used in oes-gate, oes-platform and spinnaker gate for authentication and authorization
   ldap:
     managerPassword: encrypted:ldappassword:ldappassword
+
   minio:
     accessKey: encrypted:miniopassword:miniopassword
     secretKey: encrypted:miniopassword:miniopassword
-
 ####################################################
 spinnaker:
+  autoInstallSampleApps: true   # Set this to FALSE if upgrading
   gitopsHalyard: # A repo with appropriate contents used for configuring Spinnaker
+    enabled: true
+    secretName: opsmx-gitops-auth  # No need to change this
     repo:
       type: git # git, s3, stash(bitbucket server) use a different sample values file for s3/bitbuck-stash
       ## Git repo details, https://<baseUrlHostName>/<organization>/<repository>
@@ -51,29 +70,33 @@ spinnaker:
       ## Configure below fields only if repo type is git/stash.
       baseUrlHostName: github.com    # Change only if using enterprise git or another repo-type
       projectName: ""                # Specify project name only if repo is under a project
-      halConfigBranch: 3.11        # Branch for the "repository", recommend to keep "main"
+      halConfigBranch: main        # Branch for the "repository", recommend to keep "main"
       halConfigPath: /               #relative path from repository root folder
       dynAccntConfigPath: /          #relative path from repository root folder
       
   ########################################################################################
   # Lines below this do not need to be changed except where external SSO and DBs are used
   ########################################################################################
-  
-  ## Here basic ldap auth is used by default; everything under spinCli will be pasted in ~/.spin/config
+  #
   spinCli:
+    gate:
+      endpoint: http://sapor-gate:8084 # URL that needs to be used to talk to spinnaker gate and create sample pipelines
     auth:
+      enabled: true
       basic:
-        username: admin          # Use credentials corresponding to saporgate.config.username
+        username: admin
         password: encrypted:saporpassword:saporpassword     # Use credentials corresponding to saporgate.config.password
 
-####################################################
-
 db:
+  ## Set it to false if any external database is to be used
+  enabled: true
+
+  ## Change the default configuration when above option is set to false
+  ## Below url and credentials are used by Autopilot & Sapor
   url: jdbc:postgresql://oes-db:5432
   username: postgres
   password: encrypted:dbpassword:dbpassword
 
-###############################################################################
 gate:
   config:
     #####################################################
@@ -119,14 +142,13 @@ gate:
       provider: GITHUB
 
 ###############################################################################
-rabbitmq:
-  username: rabbitmq
-  password: encrypted:rabbitmqpassword:rabbitmqpassword
-
-###############################################################################
+## Use this SAPOR GATE Configuration to Enable Basic Authentication for OES SAPOR to communitcate 
+## with spinnaker instead of x509
+## Values of SAPOR OES Gate
+##
 saporgate:
   config:
-    username: admin      # User name with admin permissions and belonging to admin groups defined in platform service
+    username: admin
     password: encrypted:saporpassword:saporpassword # Any generic String, need not be the real password
 
 ###############################################################################
@@ -134,8 +156,11 @@ saporgate:
 redis:
   url: redis://:encrypted:redispassword:redispassword@{{ .Release.Name }}-redis-master
   password: encrypted:redispassword:redispassword
-#####################################################
+
+####################################################
+# AP installs a trial LDAP for POCs and testing purposes
 # OpenLDAP custom configuration; will override default configuration of openldap helm chart
 openldap:
+  # Password for the admin user; by default it is set to admin
   adminPassword: encrypted:ldappassword:ldappassword
   configPassword: encrypted:ldapconfigpassword:ldapconfigpassword

@@ -10,26 +10,25 @@
 # c) Route traffic to the three urls mentioned below using your infrastructure
 #
 global:
-  createIngress: false
+  createIngress: true
   certManager:
-    installed: false
+    installed: true
   commonGate:
     spinnakerRBAC: true 
   oesUI:
-    host: oes.isd-pov.example.com
+    host: oes.isd-pov.http-ryzon7.opsmx.co
   oesGate:
-    host: oes-gate.isd-pov.example.com
+    host: oes-gate.isd-pov.http-ryzon7.opsmx.co
   spinDeck:
-    host: spin.isd-pov.example.com
+    host: spin.isd-pov.http-ryzon7.opsmx.co
 
 spinnaker:
   gitopsHalyard:
     repo:
-      baseUrlHostName: github.com # REPLACE for is using enterprise github
       organization: ksrinimba # REPLACE
       username: ksrinimba     # REPLACE
-      token: <YOUR TOKEN>    # REPLACE
-      repository: YOUR-REPO   # REPLACE repo name for GitOps Halyard (Sample Reference: https://github.com/OpsMx/sample-gitops-repo.git).
-      dynamicAccRepository: YOUR-REPO # REPLACE Please provide the repo name of the GitOps Dynamic Accounts Directory
-
+      token: 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
+      #token: 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
+      repository: http-ryzon7
+      dynamicAccRepository: http-ryzon7
 
