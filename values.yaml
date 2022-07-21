@@ -60,7 +60,7 @@ spinnaker:
       repository: standard-isd-gitops # repo name for GitOps Halyard, will be created if "githubcreationHook" is set to true
       username: yugaa22  # Username to authenticate with git/stash repo
       token: encrypted:gittoken:gittoken  # Token corresponding to above username
-      dynamicAccRepository: yugaa22 # Repo name of the GitOps Dynamic Accounts Directory, Can be same as "repository"
+      dynamicAccRepository: standard-isd-gitops # Repo name of the GitOps Dynamic Accounts Directory, Can be same as "repository"
 
       ########################################################################################
       ## Additional git-repo parameters, typically no need to be change
