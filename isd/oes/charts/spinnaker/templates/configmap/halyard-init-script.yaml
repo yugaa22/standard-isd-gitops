@@ -1,0 +1,70 @@
+---
+# Source: oes/charts/spinnaker/templates/configmap/halyard-init-script.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: isd-spinnaker-halyard-init-script
+  labels:
+    app: "isd-spinnaker"
+    heritage: "Helm"
+    release: "isd"
+    chart: "spinnaker-2.2.3"
+data:
+  init.sh: |
+    #!/bin/bash -x
+    rm -rf /tmp/spinnaker/.hal
+    GIT_USER=`echo $GIT_USER | sed 's/ *$//g'`
+    GIT_TOKEN=`echo $GIT_TOKEN | sed 's/ *$//g'`
+    git -c http.sslVerify=false clone $GIT_CLONE_PARAM -b main /tmp/spinnaker/test 2>/tmp/tmp.log
+    if [[ $? != 0 ]]; then
+       echo "ERROR: Failed while trying to execute:"
+       echo "git -c http.sslVerify=false clone $GIT_CLONE_PARAM -b main /tmp/spinnaker/test" | sed s/$GIT_TOKEN/\<TOKEN_REDACTED\>/g
+       sed s/$GIT_TOKEN/\<TOKEN_REDACTED\>/g /tmp/tmp.log
+       echo "####"
+       echo "Correct baseUrlHostName, organization, username, token and repository in values.yaml and re-execute 'helm upgrade --install ....' command"
+       echo "   It is possible that you need to use repoType as stash instead of git. Please check the documentation."
+       echo "To expedite the restart, wait for 60 seconds and delete the spinnaker-halyard-0 pod from another window"
+       exit 4
+    fi
+    cp -r /tmp/spinnaker/test// /tmp/spinnaker/.hal
+    if [ -d "/tmp/spinnaker/test/pipeline-promotion/" ]
+    then
+       cp -r /tmp/spinnaker/test/pipeline-promotion /tmp/spinnaker/pipeline-promotion
+    fi
+    rm -rf /tmp/spinnaker/test
+    DYNAMIC_ACCOUNTS_REPO=`echo $DYNAMIC_ACCOUNTS_REPO | sed 's/ *$//g'`
+    sed -i  s/SPINNAKER_NAMESPACE/${SPINNAKER_NAMESPACE}/ /tmp/spinnaker/.hal/config
+    sed -i  s/RELEASE_NAME/isd/g /tmp/spinnaker/.hal/config
+    sed -i  s/GIT_USER/${GIT_USER}/g /tmp/spinnaker/.hal/default/profiles/spinnakerconfig.yml
+    sed -i  s/GIT_TOKEN/${GIT_TOKEN}/g /tmp/spinnaker/.hal/default/profiles/spinnakerconfig.yml
+    sed -i  's|DYNAMIC_ACCOUNTS_REPO|'"${DYNAMIC_ACCOUNTS_REPO}"'|' /tmp/spinnaker/.hal/default/profiles/spinnakerconfig.yml
+    sed -i  s%DYN_ACCNT_CONFG_PATH%/%g /tmp/spinnaker/.hal/default/profiles/spinnakerconfig.yml
+    sed -i  s/RELEASE_NAME/isd/g /tmp/spinnaker/.hal/default/service-settings/redis.yml
+    yq e '.deploymentConfigurations.[].security.authz.enabled = "false"' /tmp/spinnaker/.hal/config > /tmp/spinnaker/.hal/config1
+    mv /tmp/spinnaker/.hal/config1 /tmp/spinnaker/.hal/config
+    if [ -f /tmp/spinnaker/.hal/default/profiles/fiat-local.yml ]; then
+    sed -i  s/RELEASE_NAME/isd/g /tmp/spinnaker/.hal/default/profiles/fiat-local.yml
+    fi
+    sed -i  s/SPINNAKER_NAMESPACE/${SPINNAKER_NAMESPACE}/ /tmp/spinnaker/.hal/default/profiles/orca-local.yml
+    printf 'server.address: 0.0.0.0\n' > /tmp/config/halyard-local.yml
+    if [ -f /tmp/spinnaker/.hal/halyard.yaml ]; then
+    cp /tmp/spinnaker/.hal/halyard.yaml /tmp/config
+    fi  # git or stash  # Enabled  # End of S3
+    # pipeline promotion configuration setup
+    #
+    ls -lart /home/spinnaker/java-lib/
+    if [ -d "/tmp/spinnaker/pipeline-promotion/" ]
+    then
+      #decrypt_key=$(kubectl get cm bootstrap -o yaml  -n ${SPINNAKER_NAMESPACE}| grep 'password:' | awk '{ print $2}')
+      decrypt_key=$(kubectl get secret bootstrap -o jsonpath='{.data.bootstrap\.yml}' -n ${SPINNAKER_NAMESPACE} | base64 -d | grep 'password:' | awk '{ print $2}')
+      if [[ $decrypt_key != "" ]];
+      then
+        for filename in /tmp/spinnaker/pipeline-promotion/*; do
+          java -cp "Decryptor.jar:/home/spinnaker/java-lib/*" Decryptor $decrypt_key "$filename"
+        done
+      mkdir /tmp/spinnaker/pipeline-decrypted/
+      mv /tmp/spinnaker/pipeline-promotion/*decrypted.yaml /tmp/spinnaker/pipeline-decrypted/
+      kubectl apply -f /tmp/spinnaker/pipeline-promotion/pipe-promot-config-cm.yaml -n ${SPINNAKER_NAMESPACE}
+      kubectl apply -f /tmp/spinnaker/pipeline-decrypted/ -n ${SPINNAKER_NAMESPACE}
+     fi
+    fi

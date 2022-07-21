@@ -1,0 +1,18 @@
+---
+# Source: oes/templates/configmaps/oes-ui-configmap.yaml
+apiVersion: v1
+data:
+  app-config.json: |
+    {
+        "endPointUrl": "http://oes-gate.dev.example.com/",
+        "setApplicationInterval": 300000
+    }
+kind: ConfigMap
+metadata:
+  name: oes-ui-config
+  labels:
+    app: oes
+    component: ui
+    heritage: "Helm"
+    release: "isd"
+    chart: "oes-3.10.11"

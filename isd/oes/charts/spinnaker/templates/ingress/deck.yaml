@@ -1,0 +1,26 @@
+---
+# Source: oes/charts/spinnaker/templates/ingress/deck.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "true"
+    kubernetes.io/ingress.class: nginx
+  name: isd-spinnaker-deck
+  labels:
+    app: "isd-spinnaker"
+    heritage: "Helm"
+    release: "isd"
+    chart: "spinnaker-2.2.3"
+spec:
+  rules:
+  - host: "spin.dev.example.com"
+    http:
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: spin-deck
+            port:
+              number: 9000
