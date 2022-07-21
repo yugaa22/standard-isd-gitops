@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: 'pvc-isd311-postgres'
+  name: 'pvc-yuga-postgres'
   namespace: opsmx-isd
 spec:
   accessModes:
