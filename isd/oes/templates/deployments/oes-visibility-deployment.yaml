@@ -8,7 +8,7 @@ metadata:
     component: visibility
     heritage: "Helm"
     release: "isd"
-    chart: "oes-3.10.11"
+    chart: "oes-3.11.4"
   name: oes-visibility
 spec:
   replicas: 1
@@ -29,14 +29,14 @@ spec:
         component: visibility
         heritage: "Helm"
         release: "isd"
-        chart: "oes-3.10.11"
+        chart: "oes-3.11.4"
     spec:
       initContainers:
       - name: db-check
         image: quay.io/opsmxpublic/postgres:9.6.5
         command: ['/bin/bash', '-c', "sleep 30;echo Waiting for oes-db to be up and running; pg_isready -h oes-db -p 5432 && echo PostgreSQL DB is ready to receive connections"]
       containers:
-      - image: quay.io/opsmxpublic/ubi8-oes-visibility:v3.10.2
+      - image: quay.io/opsmxpublic/ubi8-oes-visibility:v3.11.1
         name: oes-visibility
         ports:
         - containerPort: 8096

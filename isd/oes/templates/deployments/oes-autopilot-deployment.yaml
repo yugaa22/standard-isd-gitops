@@ -9,7 +9,7 @@ metadata:
     component: autopilot
     heritage: "Helm"
     release: "isd"
-    chart: "oes-3.10.11"
+    chart: "oes-3.11.4"
 spec:
   replicas: 1
   selector:
@@ -23,7 +23,7 @@ spec:
         component: autopilot
         heritage: "Helm"
         release: "isd"
-        chart: "oes-3.10.11"
+        chart: "oes-3.11.4"
       annotations:
         configmap/checksum: 44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a
         prometheus.io/scrape: "true"
@@ -45,7 +45,7 @@ spec:
         image: quay.io/opsmxpublic/postgres:9.6.5
         command: ['/bin/bash', '-c', "sleep 30;echo Waiting for oes-db to be up and running; pg_isready -h oes-db -p 5432 && echo PostgreSQL DB is ready to receive connections"]
       containers:
-        - image: quay.io/opsmxpublic/ubi8-oes-autopilot:v3.10.2
+        - image: quay.io/opsmxpublic/ubi8-oes-autopilot:v3.11.1
           imagePullPolicy: IfNotPresent
           name: oes-autopilot
           resources:

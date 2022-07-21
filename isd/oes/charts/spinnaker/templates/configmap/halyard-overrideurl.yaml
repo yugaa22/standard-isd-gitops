@@ -130,12 +130,12 @@ data:
         ## Configured ingress host url as override url
           echo "Substituting gate url"
           sed -i 's,PROTOCOL,http,g' /tmp/spinnaker/.hal/config
-          sed -i 's,OVERRIDE_API_URL,oes-gate.yug.play.opsmx.org,g' /tmp/spinnaker/.hal/config
+          sed -i 's,OVERRIDE_API_URL,oes-gate.example.ops.com,g' /tmp/spinnaker/.hal/config
         ;;
       spin-deck-overrideurl-gitops)
         ## Configured ingress host url as override url
           echo "Substituting deck url"
-          sed -i 's,OVERRIDE_DECK_URL,spindeck.yug.play.opsmx.org,g' /tmp/spinnaker/.hal/config
+          sed -i 's,OVERRIDE_DECK_URL,spin.example.ops.com,g' /tmp/spinnaker/.hal/config
         ;;
       *)
         echo  COMP=$COMPONENT

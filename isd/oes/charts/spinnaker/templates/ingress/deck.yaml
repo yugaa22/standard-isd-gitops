@@ -14,7 +14,7 @@ metadata:
     chart: "spinnaker-2.2.3"
 spec:
   rules:
-  - host: "spindeck.yug.play.opsmx.org"
+  - host: "spin.example.ops.com"
     http:
       paths:
       - path: /

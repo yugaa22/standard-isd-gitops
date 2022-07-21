@@ -8,7 +8,7 @@ metadata:
     component: auditservice
     heritage: "Helm"
     release: "isd"
-    chart: "oes-3.10.11"
+    chart: "oes-3.11.4"
   name: oes-audit-service
 spec:
   replicas: 1
@@ -28,10 +28,10 @@ spec:
         component: auditservice
         heritage: "Helm"
         release: "isd"
-        chart: "oes-3.10.11"
+        chart: "oes-3.11.4"
     spec:
       containers:
-      - image: quay.io/opsmxpublic/ubi8-oes-audit-service:v3.10.2
+      - image: quay.io/opsmxpublic/ubi8-oes-audit-service:v3.11.1
         imagePullPolicy: IfNotPresent
         name: oes-audit
         ports:
